@@ -13,9 +13,10 @@
         android:id="@+id/radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/custom_button"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="24dp"
+        app:layout_constraintBottom_toTopOf="@id/custom_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
@@ -38,9 +39,9 @@
         <RadioButton
             android:id="@+id/radio_button_retrofit"
             android:layout_width="match_parent"
-            android:text="@string/radio_button_retrofit_text"
             android:layout_height="wrap_content"
             android:padding="16dp"
+            android:text="@string/radio_button_retrofit_text"
             app:layout_constraintTop_toBottomOf="@+id/radio_button_load_app" />
 
     </RadioGroup>
@@ -50,8 +51,12 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_margin="20dp"
+        app:CircleColor="@color/colorAccent"
+        app:Color="@color/colorPrimary"
+        app:LoadColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:textColor="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
