@@ -38,7 +38,7 @@ class LoadingButton @JvmOverloads constructor(
         textSize = resources.getDimension(R.dimen.default_text_size)
     }
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
+    var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
 
         when (new) {
             ButtonState.Clicked -> {
