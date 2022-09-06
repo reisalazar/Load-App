@@ -1,6 +1,6 @@
 package com.udacity
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,8 +9,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.content.pm.PermissionInfo
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -29,61 +27,53 @@ import kotlinx.android.synthetic.main.content_main.*
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
-    private var downloadID: Long = 0
-    private val NOTIFICATION_ID = 0
-
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
-
     private lateinit var radioOptions: RadioOptions
     private lateinit var downloadStatus: String
 
+    private var downloadID: Long = 0
+    private val NOTIFICATION_ID = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
+        createNotificationChannel()
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-
-        radio_group.setOnCheckedChangeListener { _, i ->
-            radioOptions = when (i) {
-                R.id.radio_button_retrofit -> RadioOptions.RETROFIT
-                R.id.radio_button_load_app -> RadioOptions.UDACITY
-                R.id.radio_button_glide -> RadioOptions.GLIDE
-                else -> RadioOptions.RETROFIT
+        custom_button.setOnClickListener {
+            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+            val isConnected = activeNetwork?.isConnectedOrConnecting == true
+            if (isConnected) {
+                if (this::radioOptions.isInitialized) {
+                    custom_button.changeButtonState(ButtonState.Loading)
+                    download()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.option_select),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.no_internet),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
-        custom_button.setOnClickListener {
-            val cm = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-            val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
-
-            if (isConnected) {
-                if (this::radioOptions.isInitialized) {
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        custom_button.buttonState = ButtonState.Loading
-                        download()
-                    } else {
-                        requestPermissions(
-                            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                            PermissionInfo.PROTECTION_DANGEROUS
-                        )
-                    }
-                } else {
-                    Toast.makeText(this, getString(R.string.option_select), Toast.LENGTH_SHORT)
-                        .show()
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
+        radio_group.setOnCheckedChangeListener { _, i ->
+            radioOptions = when (i) {
+                R.id.rb_retrofit -> RadioOptions.RETROFIT
+                R.id.rb_load_app -> RadioOptions.UDACITY
+                R.id.rb_glide -> RadioOptions.GLIDE
+                else -> RadioOptions.RETROFIT
             }
         }
     }
@@ -92,6 +82,11 @@ class MainActivity : AppCompatActivity() {
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if(downloadID == id){
+                downloadStatus = "Success"
+                custom_button.buttonState = ButtonState.Completed
+                createNotification()
+            }
         }
     }
 
@@ -117,6 +112,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun createNotification() {
         notificationManager = ContextCompat.getSystemService(
             this,
@@ -160,16 +156,13 @@ class MainActivity : AppCompatActivity() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
-                CHANNEL_ID,
-                "LoadAppChannel",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
+                CHANNEL_ID, "LoadApp", NotificationManager.IMPORTANCE_HIGH).apply {
                 setShowBadge(false)
             }
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.BLUE
             notificationChannel.enableVibration(true)
-            notificationChannel.description = "Download complete!"
+            notificationChannel.description = "Download is complete!"
 
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
@@ -181,7 +174,7 @@ class MainActivity : AppCompatActivity() {
             RETROFIT(
                 "Retrofit: Type-safe HTTP client by Square, Inc",
                 "Retrofit repository is downloaded",
-                "https://github.com/square/retrofit/archive/master.zip"
+                "https://github.com/square/retrofit/archive/refs/heads/master.zip"
             ),
 
             UDACITY(
@@ -193,8 +186,7 @@ class MainActivity : AppCompatActivity() {
             GLIDE(
                 "Glide: Image Loading Library By BumpTech",
                 "Glide repository is downloaded",
-                "https://github.com/bumptech/glide/archive/master.zip"
-            )
+                "https://github.com/bumptech/glide/archive/refs/heads/master.zip"            )
         }
 
         private const val CHANNEL_ID = "channelId"

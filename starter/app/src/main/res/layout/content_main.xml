@@ -10,6 +10,7 @@
     tools:showIn="@layout/activity_main">
 
     <ImageView
+        android:contentDescription="@string/image_cloud_description"
         android:id="@+id/image_cloud"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,16 +31,16 @@
         app:layout_constraintTop_toBottomOf="@id/image_cloud">
 
         <RadioButton
-            android:id="@+id/radio_button_glide"
+            android:id="@+id/rb_glide"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="20sp"
             android:text="@string/radio_button_glide_text"
-            app:layout_constraintBottom_toTopOf="@id/radio_button_load_app" />
+            app:layout_constraintBottom_toTopOf="@id/rb_load_app" />
 
         <RadioButton
-            android:id="@+id/radio_button_load_app"
+            android:id="@+id/rb_load_app"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
@@ -49,13 +50,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RadioButton
-            android:id="@+id/radio_button_retrofit"
+            android:id="@+id/rb_retrofit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:textSize="20sp"
             android:text="@string/radio_button_retrofit_text"
-            app:layout_constraintTop_toBottomOf="@+id/radio_button_load_app" />
+            app:layout_constraintTop_toBottomOf="@+id/rb_load_app" />
 
     </RadioGroup>
 

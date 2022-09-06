@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ND940C3-Project</string>
+    <string name="app_name">LoadApp</string>
     <string name="app_description">Download files from Internet</string>
     <string name="action_settings">Settings</string>
 
@@ -10,10 +10,15 @@
 
     <string name="button_name">Click me</string>
     <string name="button_loading">We are loading </string>
+    <string name="button_completed">Download </string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="radio_button_retrofit_text">Retrofit - Type-safe HTTP client for Android and Java by Square, inc</string>
     <string name="radio_button_load_app_text">LoadApp - Current repository by Udacity</string>
     <string name="radio_button_glide_text">Glide - Image Loading Library by Bump Tech</string>
     <string name="no_internet">Please connect your device to the Internet</string>
-    <string name="option_select" />
+    <string name="option_select">Please select a option to download</string>
+    <string name="file_name">File name:</string>
+    <string name="status">Status:</string>
+    <string name="ok">OK</string>
+    <string name="image_cloud_description">a image of a cloud that have a arrow down, this sign suggests a download from the cloud</string>
 </resources>
